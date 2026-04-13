@@ -3,4 +3,11 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    overflow: hidden;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
 }
