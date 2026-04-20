@@ -1,19 +1,88 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-canvas.width = 800;
-canvas.height = 600;
+// Load the underkropp image
+const underkroppImage = new Image();
+underkroppImage.src = 'MonsterSprite/ArcherHero/Final/Underkropp_pilbage.png';
+let underkroppLoaded = false;
+underkroppImage.onload = () => underkroppLoaded = true;
+underkroppImage.onerror = () => console.error('Failed to load underkropp image');
+
+const överkroppImage = new Image();
+överkroppImage.src = 'MonsterSprite/ArcherHero/Final/Standby_bilbage-32x32_med_4a_bildrutor.png';
+let överkroppLoaded = false;
+överkroppImage.onload = () => överkroppLoaded = true;
+överkroppImage.onerror = () => console.error('Failed to load överkropp image');
+
+// Animation variables for överkropp
+let överkroppFrameIndex = 0;
+const överkroppFrameCount = 4;
+const överkroppFrameWidth = 32;
+const överkroppFrameHeight = 32;
+let överkroppAnimationCounter = 0;
+const överkroppAnimationSpeed = 10;
+
+let underkroppFrameIndex = 0;
+const underkroppFrameCount = 1;
+const underkroppFrameWidth = 32;
+const underkroppFrameHeight = 32;
+let underkroppAnimationCounter = 0;
+const underkroppAnimationSpeed = 0;
+
+function getUnderkroppCoords() {
+    const scale = 3;
+    const width = underkroppImage.naturalWidth * scale;
+    const height = underkroppImage.naturalHeight * scale;
+    const x = canvas.width / 2;
+    const y = (canvas.height + 260) / 2;
+    return { x, y, width, height };
+}
+
+function getOverkroppCoords(underkropp) {
+    const width = överkroppFrameWidth * 3;
+    const height = överkroppFrameHeight * 3;
+    const x = underkropp.x + 38;
+    const y = underkropp.y - height + 48;
+    return { x, y, width, height };
+}
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    draw();
+}
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'black';
-    const x = canvas.width * 0.5;
-    const y = canvas.height * 0.5;
-    ctx.fillRect(x, y, 100, 100);
+    
+    const underkropp = getUnderkroppCoords();
+
+    // Draw the underkropp image
+    if (underkroppLoaded && underkropp.width > 0 && underkropp.height > 0) {
+        ctx.drawImage(underkroppImage, underkropp.x, underkropp.y, underkropp.width, underkropp.height);
+    }
+
+    // Draw the överkropp image with animation
+    if (överkroppLoaded) {
+        const överkropp = getOverkroppCoords(underkropp);
+        const sx = överkroppFrameIndex * överkroppFrameWidth;
+        const sy = 0;
+        ctx.drawImage(överkroppImage, sx, sy, överkroppFrameWidth, överkroppFrameHeight, överkropp.x, överkropp.y, överkropp.width, överkropp.height);
+        
+        // Update animation
+        överkroppAnimationCounter++;
+        if (överkroppAnimationCounter >= överkroppAnimationSpeed) {
+            överkroppFrameIndex = (överkroppFrameIndex + 1) % överkroppFrameCount;
+            överkroppAnimationCounter = 0;
+        }
+    }
+    
+    // Request next frame
+    requestAnimationFrame(draw);
 }
 
-draw();
+// Initial setup
+resizeCanvas();
 
-setInterval(() => {
-    draw();
-}, 1000);  
+// Handle window resize
+window.addEventListener('resize', resizeCanvas);
