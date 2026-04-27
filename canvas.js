@@ -1,7 +1,6 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Load the underkropp image
 const underkroppImage = new Image();
 underkroppImage.src = 'MonsterSprite/ArcherHero/Final/Underkropp_pilbage.png';
 let underkroppLoaded = false;
@@ -26,7 +25,7 @@ let underkroppVLoaded = false;
 underkroppImageV.onload = () => underkroppVLoaded = true;
 underkroppImageV.onerror = () => console.error('Failed to load underkropp inverted image');
 
-// Animation variables for överkropp
+
 let överkroppFrameIndex = 0;
 const överkroppFrameCount = 4;
 const överkroppFrameWidth = 32;
@@ -41,16 +40,20 @@ const underkroppFrameHeight = 32;
 let underkroppAnimationCounter = 0;
 const underkroppAnimationSpeed = 0;
 
-// Rotation variables
+
 let rotationAngle = 0;
-const rotationSpeed = 2; // degrees per frame
+const rotationSpeed = 2;
 let rightPressed = false;
 let leftPressed = false;
-let useInvertedSprites = false; // Track if we're using inverted sprites
+let upPressed = false;
+let useInvertedSprites = false;
 
-// Pivot point for överkropp rotation (pixels from överkropp top-left)
-let överkroppPivotOffsetX = överkroppFrameWidth * 1; // center horizontally
-let överkroppPivotOffsetY = överkroppFrameHeight * 3; // bottom of the sprite
+
+let överkroppPivotOffsetX = överkroppFrameWidth * 1;
+let överkroppPivotOffsetY = överkroppFrameHeight * 3;
+
+let överkroppVPivotOffsetX = överkroppFrameWidth * 2;
+let överkroppVPivotOffsetY = överkroppFrameHeight * 3;
 
 function setOverkroppRotationPivot(offsetX, offsetY) {
     överkroppPivotOffsetX = offsetX; 
@@ -85,42 +88,51 @@ function draw() {
     
     const underkropp = getUnderkroppCoords();
 
-    // Determine which sprite set to use
     const currentUnderkroppImage = useInvertedSprites && underkroppVLoaded ? underkroppImageV : underkroppImage;
     const currentUnderkroppLoaded = useInvertedSprites && underkroppVLoaded ? underkroppVLoaded : underkroppLoaded;
     
-    // Draw the underkropp image
     if (currentUnderkroppLoaded && underkropp.width > 0 && underkropp.height > 0) {
         ctx.drawImage(currentUnderkroppImage, underkropp.x, underkropp.y, underkropp.width, underkropp.height);
     }
 
-    // Draw the överkropp image with animation
     if (överkroppLoaded) {
-        const överkropp = getOverkroppCoords(underkropp);
+        const baseÖverkropp = getOverkroppCoords(underkropp);
+        // Apply offset for inverted sprites
+        const överkropp = useInvertedSprites ? 
+            { ...baseÖverkropp, x: baseÖverkropp.x - 24 } : 
+            baseÖverkropp;
         
         // Determine which sprite set to use
         const currentÖverkroppImage = useInvertedSprites && överkroppVLoaded ? överkroppImageV : överkroppImage;
         const currentÖverkroppLoaded = useInvertedSprites && överkroppVLoaded ? överkroppVLoaded : överkroppLoaded;
         
         // Update rotation
-        if (rightPressed && rotationAngle < 90) {
+        if (rightPressed && rotationAngle <= 45) {
             rotationAngle += rotationSpeed;
-            // Switch back to normal sprites when rotating right past 45 degrees
-            if (rotationAngle > 45) {
-                useInvertedSprites = false;
-            }
         }
-        if (leftPressed && rotationAngle > -90) {
+        if (leftPressed && rotationAngle >= -45) {
             rotationAngle -= rotationSpeed;
-            // Switch to inverted sprites when rotating left past 45 degrees
-            if (rotationAngle < -45) {
-                useInvertedSprites = true;
-            }
         }
-        
+        if (rotationAngle < -45 && leftPressed == true && upPressed == true ) {
+            useInvertedSprites = true;
+            rotationAngle = 45;
+        }
+        if (rotationAngle > 45 && rightPressed == true && upPressed == true) {
+            useInvertedSprites = false;
+            rotationAngle = -45; 
+        }
+        if (rotationAngle > 0 && !rightPressed && !upPressed) {
+            rotationAngle -= rotationSpeed - 1;
+        }
+        if (rotationAngle < 0 && !leftPressed && !upPressed) {
+            rotationAngle += rotationSpeed - 1 ;
+        }
+
         ctx.save();
-        const pivotX = överkropp.x + överkroppPivotOffsetX;
-        const pivotY = överkropp.y + överkroppPivotOffsetY;
+        const currentPivotOffsetX = useInvertedSprites ? överkroppVPivotOffsetX : överkroppPivotOffsetX;
+        const currentPivotOffsetY = useInvertedSprites ? överkroppVPivotOffsetY : överkroppPivotOffsetY;
+        const pivotX = överkropp.x + currentPivotOffsetX;
+        const pivotY = överkropp.y + currentPivotOffsetY;
         ctx.translate(pivotX, pivotY);
         ctx.rotate(rotationAngle * Math.PI / 180);
         
@@ -132,8 +144,8 @@ function draw() {
         
         const sx = överkroppFrameIndex * överkroppFrameWidth;
         const sy = 0;
-        const dx = -överkroppPivotOffsetX;
-        const dy = -överkroppPivotOffsetY;
+        const dx = -currentPivotOffsetX;
+        const dy = -currentPivotOffsetY;
         ctx.drawImage(currentÖverkroppImage, sx, sy, överkroppFrameWidth, överkroppFrameHeight, dx, dy, överkropp.width, överkropp.height);
         
         ctx.restore();
@@ -162,10 +174,12 @@ const pivotYValue = document.getElementById('pivotYValue');
 if (pivotXRange && pivotYRange && pivotXValue && pivotYValue) {
     pivotXRange.addEventListener('input', (event) => {
         överkroppPivotOffsetX = Number(event.target.value);
+        överkroppVPivotOffsetX = Number(event.target.value);
         pivotXValue.textContent = överkroppPivotOffsetX;
     });
     pivotYRange.addEventListener('input', (event) => {
         överkroppPivotOffsetY = Number(event.target.value);
+        överkroppVPivotOffsetY = Number(event.target.value);
         pivotYValue.textContent = överkroppPivotOffsetY;
     });
 
@@ -181,6 +195,8 @@ window.addEventListener('keydown', (event) => {
         rightPressed = true;
     } else if (event.code === 'ArrowLeft') {
         leftPressed = true;
+    } else if (event.code === 'ArrowUp') {
+        upPressed = true;
     }
 });
 
@@ -189,5 +205,7 @@ window.addEventListener('keyup', (event) => {
         rightPressed = false;
     } else if (event.code === 'ArrowLeft') {
         leftPressed = false;
+    } else if (event.code === 'ArrowUp') {
+        upPressed = false;
     }
 });
