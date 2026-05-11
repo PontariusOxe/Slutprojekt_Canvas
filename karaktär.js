@@ -3,9 +3,6 @@ const ctx = canvas.getContext('2d');
 
 let animationStarted = false;
 
-// =======================
-// UNDERKROPP
-// =======================
 const underkroppImage = new Image();
 underkroppImage.src = 'MonsterSprite/ArcherHero/Final/Underkropp_pilbage.png';
 let underkroppLoaded = false;
@@ -16,9 +13,6 @@ underkroppImageV.src = 'MonsterSprite/ArcherHero/Final/underkroppV.png';
 let underkroppVLoaded = false;
 underkroppImageV.onload = () => underkroppVLoaded = true;
 
-// =======================
-// ÖVERKROPP
-// =======================
 const överkroppImage = new Image();
 överkroppImage.src = 'MonsterSprite/ArcherHero/Final/Idle.png';
 let överkroppLoaded = false;
@@ -29,9 +23,17 @@ const överkroppImageV = new Image();
 let överkroppVLoaded = false;
 överkroppImageV.onload = () => överkroppVLoaded = true;
 
-// =======================
-// ANIMATION (Överkropp)
-// =======================
+const överkroppAttackImage = new Image();
+överkroppAttackImage.src = 'MonsterSprite/ArcherHero/Final/Attack.png';
+let överkroppAttackLoaded = false;
+överkroppAttackImage.onload = () => överkroppAttackLoaded = true;
+
+const överkroppAttackImageV = new Image();
+överkroppAttackImageV.src = 'MonsterSprite/ArcherHero/Final/AttackV.png';
+let överkroppAttackVLoaded = false;
+överkroppAttackImageV.onload = () => överkroppAttackVLoaded = true;
+
+
 let överkroppFrameIndex = 0;
 const överkroppFrameCount = 1;
 const överkroppFrameWidth = 32;
@@ -39,26 +41,32 @@ const överkroppFrameHeight = 32;
 let överkroppAnimationCounter = 0;
 const överkroppAnimationSpeed = 10;
 
-// =======================
-// ROTATION / INPUT
-// =======================
+let överkroppAttackFrameIndex = 0;
+const överkroppAttackFrameCount = 1;
+const överkroppAttackFrameWidth = 32;
+const överkroppAttackFrameHeight = 32;
+let överkroppAttackAnimationCounter = 0;
+const överkroppAttackAnimationSpeed = 10;
+
 let rotationAngle = 0;
 const rotationSpeed = 2;
 
 let rightPressed = false;
 let leftPressed = false;
 let upPressed = false;
+let attackPressed = false;
 
 let useInvertedSprites = false;
+let useAttackSprites = false;
 
-// =======================
-// PIVOT
-// =======================
 let överkroppPivotOffsetX = överkroppFrameWidth * 1.5;
 let överkroppPivotOffsetY = överkroppFrameHeight * 3;
 
-let överkroppVPivotOffsetX = överkroppFrameWidth * 2;
+let överkroppVPivotOffsetX = överkroppFrameWidth * 1.5;
 let överkroppVPivotOffsetY = överkroppFrameHeight * 3;
+
+let överkroppAttackPivotOffsetX = överkroppAttackFrameWidth * 1.5;
+let överkroppAttackPivotOffsetY = överkroppAttackFrameHeight * 3;
 
 
 function getUnderkroppCoords() {
@@ -79,9 +87,6 @@ function getOverkroppCoords(underkropp) {
 }
 
 
-// =======================
-// RESIZE
-// =======================
 function resizeCanvas() {
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -89,17 +94,14 @@ canvas.height = window.innerHeight;
 
 window.addEventListener('resize', resizeCanvas);
 
-// =======================
-// DRAW LOOP
-// =======================
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (typeof HP !== 'undefined') {
+        HP.draw(ctx);
+    }
 
     const underkropp = getUnderkroppCoords();
 
-    // =======================
-    // UNDERKROPP (ALLTID)
-    // =======================
     const currentUnderkroppImage =
     useInvertedSprites && underkroppVLoaded
         ? underkroppImageV
@@ -120,9 +122,6 @@ if (currentUnderkroppLoaded) {
     );
 }
 
-// =======================
-// STOPPA TILLS START
-// =======================
 if (!animationStarted) {
     ctx.fillStyle = "white";
     ctx.font = "30px Arial";
@@ -132,43 +131,58 @@ if (!animationStarted) {
     return;
 }
 
-// =======================
-// ÖVERKROPP
-// =======================
 const överkropp = getOverkroppCoords(underkropp);
 
 if (överkroppLoaded) {
-     const currentOverkroppImage =
-    useInvertedSprites && överkroppVLoaded
-        ? överkroppImageV
-        : överkroppImage;
+    const currentOverkroppImage =
+        useInvertedSprites && överkroppVLoaded
+            ? överkroppImageV
+            : överkroppImage;
+    const currentOverkroppAttackImage =
+        useAttackSprites
+            ? (useInvertedSprites
+                ? (överkroppAttackVLoaded ? överkroppAttackImageV : currentOverkroppImage)
+                : (överkroppAttackLoaded ? överkroppAttackImage : currentOverkroppImage))
+            : currentOverkroppImage;
 
-const currentOverkroppLoaded =
-    useInvertedSprites && överkroppVLoaded
-        ? överkroppVLoaded
-        : överkroppLoaded;
+    const currentOverkroppLoaded =
+        useInvertedSprites && överkroppVLoaded
+            ? överkroppVLoaded
+            : överkroppLoaded;
+    const currentOverkroppAttackLoaded =
+        useAttackSprites
+            ? (useInvertedSprites
+                ? (överkroppAttackVLoaded || currentOverkroppLoaded)
+                : (överkroppAttackLoaded || currentOverkroppLoaded))
+            : currentOverkroppLoaded;
 
-    // rotation
-        if (rightPressed && rotationAngle <= 45) {
-            rotationAngle += rotationSpeed;
-        }
-        if (leftPressed && rotationAngle >= -45) {
-            rotationAngle -= rotationSpeed;
-        }
-        if (rotationAngle < -45 && leftPressed == true && upPressed == true ) {
-            useInvertedSprites  = true;
-            rotationAngle = 45;
-        }
-        if (rotationAngle > 45 && rightPressed == true && upPressed == true) {
-            useInvertedSprites = false;
-            rotationAngle = -45; 
-        }
-        if (rotationAngle > 0 && !rightPressed && !upPressed) {
-            rotationAngle -= rotationSpeed - 1;
-        }
-        if (rotationAngle < 0 && !leftPressed && !upPressed) {
-            rotationAngle += rotationSpeed - 1 ;
-        }
+    if (rightPressed && rotationAngle <= 45) {
+        rotationAngle += rotationSpeed;
+    }
+    if (leftPressed && rotationAngle >= -45) {
+        rotationAngle -= rotationSpeed;
+    }
+    if (rotationAngle < -45 && leftPressed == true && upPressed == true ) {
+        useInvertedSprites  = true;
+        rotationAngle = 45;
+    }
+    if (rotationAngle > 45 && rightPressed == true && upPressed == true) {
+        useInvertedSprites = false;
+        rotationAngle = -45; 
+    }
+    if (rotationAngle > 0 && !rightPressed && !upPressed) {
+        rotationAngle -= rotationSpeed - 1;
+    }
+    if (rotationAngle < 0 && !leftPressed && !upPressed) {
+        rotationAngle += rotationSpeed - 1 ;
+    }
+    if (attackPressed) {
+        useAttackSprites = true;
+    } else {
+        useAttackSprites = false;
+    }
+
+
     ctx.save();
 
     const pivotX = överkropp.x + överkroppPivotOffsetX;
@@ -180,7 +194,7 @@ const currentOverkroppLoaded =
     const sx = överkroppFrameIndex * överkroppFrameWidth;
 
     ctx.drawImage(
-        currentOverkroppImage,
+        currentOverkroppAttackImage,
         sx,
         0,
         överkroppFrameWidth,
@@ -193,7 +207,6 @@ const currentOverkroppLoaded =
 
     ctx.restore();
 
-    // animation
     överkroppAnimationCounter++;
     if (överkroppAnimationCounter >= överkroppAnimationSpeed) {
         överkroppFrameIndex =
@@ -206,6 +219,10 @@ const currentOverkroppLoaded =
         drawGolem(överkropp);
     }
 
+    if (typeof drawNightborne === 'function') {
+        drawNightborne(överkropp);
+    }
+
     requestAnimationFrame(draw);
 }
 
@@ -215,6 +232,7 @@ draw();
 window.addEventListener('keydown', (event) => {
     if (event.code === 'Space') {
         animationStarted = true;
+        attackPressed = true;
     }
     if (event.code === 'ArrowRight') rightPressed = true;
     if (event.code === 'ArrowLeft') leftPressed = true;
@@ -225,5 +243,6 @@ window.addEventListener('keyup', (event) => {
     if (event.code === 'ArrowRight') rightPressed = false;
     if (event.code === 'ArrowLeft') leftPressed = false;
     if (event.code === 'ArrowUp') upPressed = false;
+    if (event.code === 'Space') attackPressed = false;
 });
 

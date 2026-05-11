@@ -13,7 +13,7 @@ golemAttackImage.onerror = () => console.error('Failed to load golem attack imag
 let golemLoaded = false;
 let golemX = 0;
 let golemDirection = 1;
-const golemSpeed = 2;
+const golemSpeed = 1.5;
 const golemScale = 3;
 let golemState = 'walking';
 
@@ -25,13 +25,16 @@ let golemwalkAnimationCounter = 0;
 const golemwalkAnimationSpeed = 10;
 
 const golemAttackFrameCount = 10;
+const golemAttackDamageFrame = 6;
 let golemAttackFrameIndex = 0;
 let golemAttackAnimationCounter = 0;
+let golemAttackDamageDealt = false;
 const golemAttackAnimationSpeed = 10;
 
 function resetGolem() {
     golemAttackFrameIndex = 0;
     golemAttackAnimationCounter = 0;
+    golemAttackDamageDealt = false;
     const width = golemwalkFrameWidth * golemScale;
     const fromLeft = Math.random() < 0.5;
     golemDirection = fromLeft ? 1 : -1;
@@ -73,7 +76,19 @@ function updateGolem(playerÖverkropp) {
     } else if (golemState === 'stopped' && golemAttackLoaded) {
         golemAttackAnimationCounter++;
         if (golemAttackAnimationCounter >= golemAttackAnimationSpeed) {
+            if (golemAttackFrameIndex === golemAttackDamageFrame && !golemAttackDamageDealt) {
+                if (typeof HP !== 'undefined') {
+                    HP.takeDamagePercent(HP.damagePercent);
+                }
+                golemAttackDamageDealt = true;
+            }
+            
             golemAttackFrameIndex = (golemAttackFrameIndex + 1) % golemAttackFrameCount;
+            
+            if (golemAttackFrameIndex === 0) {
+                golemAttackDamageDealt = false;
+            }
+            
             golemAttackAnimationCounter = 0;
         }
     }
