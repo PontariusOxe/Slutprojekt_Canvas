@@ -1,7 +1,4 @@
 
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -14,14 +11,15 @@ const bollFrameCount = 1;
 const bollAnimationSpeed = 10;
 const bollFrameWidth = 16;
 const bollFrameHeight = 16;
-const bollScale = 3;
+const bollScale = 1;
 const bollSpeed = 5;
 
 let projectiles = [];
 
 function spawnProjectile(x, y, angle) {
     const rad = -angle * Math.PI / 180;
-    const vx = Math.cos(rad) * bollSpeed;
+    const direction = useInvertedSprites ? -1 : 1;
+    const vx = Math.cos(rad) * bollSpeed * direction;
     const vy = Math.sin(rad) * bollSpeed;
     projectiles.push({
         x: x,

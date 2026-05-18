@@ -1,8 +1,6 @@
 const EnemyArray = [
 
-    // =========================
     // NIGHTBORNE
-    // =========================
 
     {
         Id: "NightBorne",
@@ -12,9 +10,11 @@ const EnemyArray = [
 
         walkImage: new Image(),
         attackImage: new Image(),
+        deathImage: new Image(),
 
         loaded: false,
         attackLoaded: false,
+        deathLoaded: false,
 
         x: 0,
         direction: 1,
@@ -26,9 +26,6 @@ const EnemyArray = [
 
         health: 100,
         maxHealth: 100,
-
-        deathImage: new Image(),
-        deathLoaded: false,
         dead: false,
 
         walk: {
@@ -82,9 +79,15 @@ const EnemyArray = [
 
         reset() {
 
+            this.health = this.maxHealth;
+            this.dead = false;
+
             this.attack.FrameIndex = 0;
             this.attack.AnimationCounter = 0;
             this.attack.DamageDealt = false;
+
+            this.death.FrameIndex = 0;
+            this.death.AnimationCounter = 0;
 
             const width = this.walk.FrameWidth * this.scale;
 
@@ -124,14 +127,18 @@ const EnemyArray = [
         getCoords() {
 
             const currentFrameWidth =
-                this.state === "walking"
-                    ? this.walk.FrameWidth
-                    : this.attack.FrameWidth;
+                this.state === "dead"
+                    ? this.death.FrameWidth
+                    : this.state === "walking"
+                        ? this.walk.FrameWidth
+                        : this.attack.FrameWidth;
 
             const currentFrameHeight =
-                this.state === "walking"
-                    ? this.walk.FrameHeight
-                    : this.attack.FrameHeight;
+                this.state === "dead"
+                    ? this.death.FrameHeight
+                    : this.state === "walking"
+                        ? this.walk.FrameHeight
+                        : this.attack.FrameHeight;
 
             const width = currentFrameWidth * this.scale;
             const height = currentFrameHeight * this.scale;
@@ -152,23 +159,25 @@ const EnemyArray = [
         update(playerÖverkropp) {
 
             if (!this.loaded || !playerÖverkropp) return;
-            
-                if (this.state === "dead") {
 
-                    this.death.AnimationCounter++;
+            // DEATH
+            if (this.state === "dead") {
 
-                    if (this.death.AnimationCounter >= this.death.AnimationSpeed) {
+                this.death.AnimationCounter++;
 
-                        if (this.death.FrameIndex < this.death.FrameCount - 1) {
+                if (this.death.AnimationCounter >= this.death.AnimationSpeed) {
 
-                            this.death.FrameIndex++;
-                        }
+                    if (this.death.FrameIndex < this.death.FrameCount - 1) {
+
+                        this.death.FrameIndex++;
+                    }
 
                     this.death.AnimationCounter = 0;
                 }
 
                 return;
             }
+
             const coords = this.getCoords();
 
             const stopX =
@@ -178,6 +187,7 @@ const EnemyArray = [
 
             const distance = stopX - this.x;
 
+            // WALK
             if (this.state === "walking") {
 
                 if (Math.abs(distance) <= this.speed) {
@@ -199,8 +209,10 @@ const EnemyArray = [
 
                     this.walk.AnimationCounter = 0;
                 }
+            }
 
-            } else if (this.state === "stopped" && this.attackLoaded) {
+            // ATTACK
+            else if (this.state === "stopped" && this.attackLoaded) {
 
                 this.attack.AnimationCounter++;
 
@@ -239,26 +251,43 @@ const EnemyArray = [
             const coords = this.getCoords();
 
             const isWalking = this.state === "walking";
+            const isDead = this.state === "dead";
 
-            const currentImage =
-                !isWalking && this.attackLoaded
-                    ? this.attackImage
-                    : this.walkImage;
+            let currentImage;
+
+            if (isDead && this.deathLoaded) {
+
+                currentImage = this.deathImage;
+
+            } else if (!isWalking && this.attackLoaded) {
+
+                currentImage = this.attackImage;
+
+            } else {
+
+                currentImage = this.walkImage;
+            }
 
             const currentFrameIndex =
-                isWalking
-                    ? this.walk.FrameIndex
-                    : this.attack.FrameIndex;
+                isDead
+                    ? this.death.FrameIndex
+                    : isWalking
+                        ? this.walk.FrameIndex
+                        : this.attack.FrameIndex;
 
             const currentFrameWidth =
-                isWalking
-                    ? this.walk.FrameWidth
-                    : this.attack.FrameWidth;
+                isDead
+                    ? this.death.FrameWidth
+                    : isWalking
+                        ? this.walk.FrameWidth
+                        : this.attack.FrameWidth;
 
             const currentFrameHeight =
-                isWalking
-                    ? this.walk.FrameHeight
-                    : this.attack.FrameHeight;
+                isDead
+                    ? this.death.FrameHeight
+                    : isWalking
+                        ? this.walk.FrameHeight
+                        : this.attack.FrameHeight;
 
             const frameX = currentFrameIndex * currentFrameWidth;
 
@@ -286,14 +315,42 @@ const EnemyArray = [
             );
 
             this.ctx.restore();
+
+            // HEALTH BAR
+
+            const barWidth = 80;
+            const barHeight = 10;
+
+            const healthPercent = this.health / this.maxHealth;
+
+            this.ctx.fillStyle = "red";
+
+            this.ctx.fillRect(
+                coords.x + (coords.width / 2) - (barWidth / 2),
+                coords.y - 20,
+                barWidth,
+                barHeight
+            );
+
+            this.ctx.fillStyle = "lime";
+
+            this.ctx.fillRect(
+                coords.x + (coords.width / 2) - (barWidth / 2),
+                coords.y - 20,
+                barWidth * healthPercent,
+                barHeight
+            );
         }
     },
 
 
 
 
-    // GOLEM
 
+
+    // =========================
+    // GOLEM
+    // =========================
 
     {
         Id: "golem",
@@ -303,9 +360,11 @@ const EnemyArray = [
 
         walkImage: new Image(),
         attackImage: new Image(),
+        deathImage: new Image(),
 
         loaded: false,
         attackLoaded: false,
+        deathLoaded: false,
 
         x: 0,
         direction: 1,
@@ -314,12 +373,9 @@ const EnemyArray = [
         scale: 3,
 
         state: "walking",
-         
+
         health: 100,
         maxHealth: 100,
-
-        deathImage: new Image(),
-        deathLoaded: false,
         dead: false,
 
         walk: {
@@ -375,11 +431,13 @@ const EnemyArray = [
 
             this.health = this.maxHealth;
             this.dead = false;
-            this.health = this.maxHealth;
-            this.dead = false;
+
             this.attack.FrameIndex = 0;
             this.attack.AnimationCounter = 0;
             this.attack.DamageDealt = false;
+
+            this.death.FrameIndex = 0;
+            this.death.AnimationCounter = 0;
 
             const width = this.walk.FrameWidth * this.scale;
 
@@ -419,14 +477,18 @@ const EnemyArray = [
         getCoords() {
 
             const currentFrameWidth =
-                this.state === "walking"
-                    ? this.walk.FrameWidth
-                    : this.attack.FrameWidth;
+                this.state === "dead"
+                    ? this.death.FrameWidth
+                    : this.state === "walking"
+                        ? this.walk.FrameWidth
+                        : this.attack.FrameWidth;
 
             const currentFrameHeight =
-                this.state === "walking"
-                    ? this.walk.FrameHeight
-                    : this.attack.FrameHeight;
+                this.state === "dead"
+                    ? this.death.FrameHeight
+                    : this.state === "walking"
+                        ? this.walk.FrameHeight
+                        : this.attack.FrameHeight;
 
             const width = currentFrameWidth * this.scale;
             const height = currentFrameHeight * this.scale;
@@ -446,6 +508,24 @@ const EnemyArray = [
 
             if (!this.loaded || !playerÖverkropp) return;
 
+            // DEATH
+            if (this.state === "dead") {
+
+                this.death.AnimationCounter++;
+
+                if (this.death.AnimationCounter >= this.death.AnimationSpeed) {
+
+                    if (this.death.FrameIndex < this.death.FrameCount - 1) {
+
+                        this.death.FrameIndex++;
+                    }
+
+                    this.death.AnimationCounter = 0;
+                }
+
+                return;
+            }
+
             const coords = this.getCoords();
 
             const stopX =
@@ -455,6 +535,7 @@ const EnemyArray = [
 
             const distance = stopX - this.x;
 
+            // WALK
             if (this.state === "walking") {
 
                 if (Math.abs(distance) <= this.speed) {
@@ -476,8 +557,10 @@ const EnemyArray = [
 
                     this.walk.AnimationCounter = 0;
                 }
+            }
 
-            } else if (this.state === "stopped" && this.attackLoaded) {
+            // ATTACK
+            else if (this.state === "stopped" && this.attackLoaded) {
 
                 this.attack.AnimationCounter++;
 
@@ -516,26 +599,43 @@ const EnemyArray = [
             const coords = this.getCoords();
 
             const isWalking = this.state === "walking";
+            const isDead = this.state === "dead";
 
-            const currentImage =
-                !isWalking && this.attackLoaded
-                    ? this.attackImage
-                    : this.walkImage;
+            let currentImage;
+
+            if (isDead && this.deathLoaded) {
+
+                currentImage = this.deathImage;
+
+            } else if (!isWalking && this.attackLoaded) {
+
+                currentImage = this.attackImage;
+
+            } else {
+
+                currentImage = this.walkImage;
+            }
 
             const currentFrameIndex =
-                isWalking
-                    ? this.walk.FrameIndex
-                    : this.attack.FrameIndex;
+                isDead
+                    ? this.death.FrameIndex
+                    : isWalking
+                        ? this.walk.FrameIndex
+                        : this.attack.FrameIndex;
 
             const currentFrameWidth =
-                isWalking
-                    ? this.walk.FrameWidth
-                    : this.attack.FrameWidth;
+                isDead
+                    ? this.death.FrameWidth
+                    : isWalking
+                        ? this.walk.FrameWidth
+                        : this.attack.FrameWidth;
 
             const currentFrameHeight =
-                isWalking
-                    ? this.walk.FrameHeight
-                    : this.attack.FrameHeight;
+                isDead
+                    ? this.death.FrameHeight
+                    : isWalking
+                        ? this.walk.FrameHeight
+                        : this.attack.FrameHeight;
 
             const frameX = currentFrameIndex * currentFrameWidth;
 
@@ -563,6 +663,31 @@ const EnemyArray = [
             );
 
             this.ctx.restore();
+
+            // HEALTH BAR
+
+            const barWidth = 80;
+            const barHeight = 10;
+
+            const healthPercent = this.health / this.maxHealth;
+
+            this.ctx.fillStyle = "red";
+
+            this.ctx.fillRect(
+                coords.x + (coords.width / 2) - (barWidth / 2),
+                coords.y - 20,
+                barWidth,
+                barHeight
+            );
+
+            this.ctx.fillStyle = "lime";
+
+            this.ctx.fillRect(
+                coords.x + (coords.width / 2) - (barWidth / 2),
+                coords.y - 20,
+                barWidth * healthPercent,
+                barHeight
+            );
         }
     }
 ];
@@ -570,10 +695,38 @@ const EnemyArray = [
 
 
 
-// LOAD ENEMIES
+// ACTIVE ENEMIES
+
+const ActiveEnemies = [];
 
 
-EnemyArray.forEach(enemy => {
+
+
+// SPAWN RANDOM ENEMY
+
+function spawnRandomEnemy() {
+
+    const enemyTemplate =
+        EnemyArray[Math.floor(Math.random() * EnemyArray.length)];
+
+    // DEEP COPY
+    const enemy = structuredClone(enemyTemplate);
+    
+    // RECONNECT FUNCTIONS
+    Object.setPrototypeOf(enemy, Object.getPrototypeOf(enemyTemplate));
+
+    // CANVAS
+    enemy.canvas = document.getElementById('gameCanvas');
+    enemy.ctx = enemy.canvas.getContext('2d');
+
+    // IMAGES
+    enemy.walkImage = new Image();
+    enemy.attackImage = new Image();
+    enemy.deathImage = new Image();
+
+    enemy.loaded = false;
+    enemy.attackLoaded = false;
+    enemy.deathLoaded = false;
 
     enemy.walkImage.src = enemy.walk.sprite;
     enemy.attackImage.src = enemy.attack.sprite;
@@ -585,21 +738,29 @@ EnemyArray.forEach(enemy => {
         enemy.reset();
     };
 
-    enemy.deathImage.onload = () => {
-
-    enemy.deathLoaded = true;
-    };
-
     enemy.attackImage.onload = () => {
 
         enemy.attackLoaded = true;
     };
 
-    enemy.walkImage.onerror = () => {
-        console.error(`${enemy.Id} walk image failed to load`);
+    enemy.deathImage.onload = () => {
+
+        enemy.deathLoaded = true;
     };
 
-    enemy.attackImage.onerror = () => {
-        console.error(`${enemy.Id} attack image failed to load`);
-    };
-});
+    ActiveEnemies.push(enemy);
+
+    console.log("Spawned:", enemy.Id);
+}
+
+
+
+// SPAWN EVERY 10 SECONDS
+
+spawnRandomEnemy();
+
+setInterval(() => {
+
+    spawnRandomEnemy();
+
+}, 10000);

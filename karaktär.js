@@ -136,15 +136,6 @@ if (currentUnderkroppLoaded) {
     );
 }
 
-if (!animationStarted) {
-    ctx.fillStyle = "white";
-    ctx.font = "30px Arial";
-    ctx.fillText("Press SPACE to start", canvas.width / 2 - 150, 100);
-
-    requestAnimationFrame(draw);
-    return;
-}
-
 const överkropp = getOverkroppCoords(underkropp);
 
 if (överkroppLoaded) {
@@ -226,7 +217,7 @@ if (överkroppLoaded) {
         överkroppFrameIndex =
             (överkroppFrameIndex + 1) % överkroppFrameCount;
         överkroppAnimationCounter = 0;
-    }
+        }
 }
 
     // Draw projectiles
@@ -254,10 +245,31 @@ window.addEventListener('keydown', (event) => {
         attackPressed = true;
         // Spawn projectile
         const underkropp = getUnderkroppCoords();
-        const pivotX = canvas.width / 2 + 67.5;
-        const pivotY = (canvas.height + 260) / 2 + 40;
+        const överkropp = getOverkroppCoords(underkropp);
+
+        const currentPivotOffsetX = useInvertedSprites
+            ? överkroppVPivotOffsetX
+            : överkroppPivotOffsetX;
+
+        const currentPivotOffsetY = useInvertedSprites
+            ? överkroppVPivotOffsetY
+            : överkroppPivotOffsetY;
+
+        const bowPivotX = överkropp.x + currentPivotOffsetX - 10;
+        const bowPivotY = överkropp.y + currentPivotOffsetY - 50;
+
+        const distance = 40;
+
+        const rad = rotationAngle * Math.PI / 180;
+
+        // Reverse direction when inverted
+        const direction = useInvertedSprites ? -1 : 1;
+
+        const spawnX = bowPivotX + Math.cos(rad) * distance * direction;
+        const spawnY = bowPivotY + Math.sin(rad) * distance;
+
         if (typeof spawnProjectile === 'function') {
-            spawnProjectile(pivotX, pivotY, rotationAngle);
+            spawnProjectile(spawnX, spawnY, rotationAngle);
         }
     }
     if (event.code === 'KeyD') rightPressed = true;
