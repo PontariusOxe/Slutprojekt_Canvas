@@ -5,7 +5,6 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-
 const bollImg = new Image();
 bollImg.src = "boll/boll.png";
 
@@ -18,57 +17,36 @@ const bollFrameHeight = 16;
 const bollScale = 3;
 const bollSpeed = 5;
 
+let projectiles = [];
 
-let hitbox = {
-x: boll.x + 200,
-y: boll.y + 450,
-width: 600,
-height: 150
-};
-
-
-let keys = {};
-
-window.addEventListener("keydown", (spacebar) => {
-keys[spacebar.key] = true;
-});
-
-window.addEventListener("keyup", (spacebar) => {
-keys[spacebar.key] = false;
-});
-
-
-function update() {
-if (keys["ArrowRight"]) boll.x += boll.speed;
-if (keys["ArrowLeft"]) boll.x -= boll.speed;
-if (keys["ArrowUp"]) boll.y -= boll.speed;
-if (keys["ArrowDown"]) boll.y += boll.speed;
-
-
-hitbox.x = boll.x + 200;
-hitbox.y = boll.y + 450;
+function spawnProjectile(x, y, angle) {
+    const rad = -angle * Math.PI / 180;
+    const vx = Math.cos(rad) * bollSpeed;
+    const vy = Math.sin(rad) * bollSpeed;
+    projectiles.push({
+        x: x,
+        y: y,
+        vx: vx,
+        vy: vy,
+        width: bollFrameWidth * bollScale,
+        height: bollFrameHeight * bollScale
+    });
 }
 
-
-function draw() {
-ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-
-ctx.drawImage(bollImg, boll.x, boll.y, 300, 300);
-
-
-ctx.strokeStyle = "red";
-ctx.strokeRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+function updateProjectiles() {
+    for (let i = projectiles.length - 1; i >= 0; i--) {
+        const p = projectiles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        // Remove if off screen
+        if (p.x < -p.width || p.x > canvas.width + p.width || p.y < -p.height || p.y > canvas.height + p.height) {
+            projectiles.splice(i, 1);
+        }
+    }
 }
 
-
-function gameLoop() {
-update();
-draw();
-requestAnimationFrame(gameLoop);
+function drawProjectiles() {
+    for (const p of projectiles) {
+        ctx.drawImage(bollImg, p.x, p.y, p.width, p.height);
+    }
 }
-
-
-bollImg.onload = () => {
-gameLoop();
-};

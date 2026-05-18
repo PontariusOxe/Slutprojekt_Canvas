@@ -1,0 +1,139 @@
+
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    }
+
+    .button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.bubble {
+    position: relative;
+    bottom: 2vh;
+}
+
+    body {
+            background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("TjNWDB.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    }
+
+    .container {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 40px;
+    border-radius: 20px;
+    color: white;
+    }
+
+    h1 {
+    margin-bottom: 25px;
+    font-size: 3rem;
+    }
+
+    .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    }
+
+    button,
+    .link-button {
+    padding: 14px 28px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+    color: white;
+    background-color: forestgreen;
+    }
+
+    button:hover,
+    .link-button:hover {
+    background-color: darkgreen;
+    transform: scale(1.05);
+    }
+
+    .bubble {
+    display: none;
+    margin-top: 25px;
+    background: white;
+    color: black;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1rem;
+    }
+
+    ul {
+    text-decoration: none;
+    list-style-type: none;
+}
+
+.credit {
+    background-color: #dacd84;
+    color: black;
+    border: 0.4vh solid rgb(212, 183, 39);
+    padding: 12px 24px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    position: fixed;
+    bottom: 20vh;
+    right: 2vw;
+    z-index: 500;
+}
+
+.bubble {
+    background-color: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    animation: slideUp 0.3s ease;
+}
+
+
+.close-btn:hover {
+    color: #000;
+}
+
+.contact-modal {
+    display: none;
+}
+
+.contact-modal.show {
+    display: flex;
+}

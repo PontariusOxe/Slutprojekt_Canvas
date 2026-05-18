@@ -36,7 +36,7 @@ let överkroppAttackVLoaded = false;
 
 let överkroppFrameIndex = 0;
 const överkroppFrameCount = 1;
-const överkroppFrameWidth = 32;
+const överkroppFrameWidth = 33;
 const överkroppFrameHeight = 32;
 let överkroppAnimationCounter = 0;
 const överkroppAnimationSpeed = 10;
@@ -100,9 +100,23 @@ function draw() {
         HP.draw(ctx);
     }
 
-    const underkropp = getUnderkroppCoords();
+    // Update projectiles
+    if (typeof updateProjectiles === 'function') {
+        updateProjectiles();
+    }
 
-    const currentUnderkroppImage =
+if (!animationStarted) {
+    ctx.fillStyle = "white";
+    ctx.font = "30px Arial";
+    ctx.fillText("Press SPACE to start", canvas.width / 2 - 150, 100);
+
+    requestAnimationFrame(draw);
+    return;
+}
+
+const underkropp = getUnderkroppCoords();
+
+const currentUnderkroppImage =
     useInvertedSprites && underkroppVLoaded
         ? underkroppImageV
         : underkroppImage;
@@ -215,6 +229,11 @@ if (överkroppLoaded) {
     }
 }
 
+    // Draw projectiles
+    if (typeof drawProjectiles === 'function') {
+        drawProjectiles();
+    }
+
     if (typeof drawGolem === 'function') {
         drawGolem(överkropp);
     }
@@ -233,16 +252,23 @@ window.addEventListener('keydown', (event) => {
     if (event.code === 'Space') {
         animationStarted = true;
         attackPressed = true;
+        // Spawn projectile
+        const underkropp = getUnderkroppCoords();
+        const pivotX = canvas.width / 2 + 67.5;
+        const pivotY = (canvas.height + 260) / 2 + 40;
+        if (typeof spawnProjectile === 'function') {
+            spawnProjectile(pivotX, pivotY, rotationAngle);
+        }
     }
-    if (event.code === 'ArrowRight') rightPressed = true;
-    if (event.code === 'ArrowLeft') leftPressed = true;
-    if (event.code === 'ArrowUp') upPressed = true;
+    if (event.code === 'KeyD') rightPressed = true;
+    if (event.code === 'KeyA') leftPressed = true;
+    if (event.code === 'KeyW') upPressed = true;
 });
 
 window.addEventListener('keyup', (event) => {
-    if (event.code === 'ArrowRight') rightPressed = false;
-    if (event.code === 'ArrowLeft') leftPressed = false;
-    if (event.code === 'ArrowUp') upPressed = false;
+    if (event.code === 'KeyD') rightPressed = false;
+    if (event.code === 'KeyA') leftPressed = false;
+    if (event.code === 'KeyW') upPressed = false;
     if (event.code === 'Space') attackPressed = false;
 });
 

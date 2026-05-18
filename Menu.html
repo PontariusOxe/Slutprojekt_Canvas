@@ -1,111 +1,68 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Defender Of The Woods</title>
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-image: url("Här");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    .container {
-      text-align: center;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 40px;
-      border-radius: 20px;
-      color: white;
-    }
-
-    h1 {
-      margin-bottom: 25px;
-      font-size: 3rem;
-    }
-
-    .button-container {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    button,
-    .link-button {
-      padding: 14px 28px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: 0.3s;
-      text-decoration: none;
-      color: white;
-      background-color: forestgreen;
-    }
-
-    button:hover,
-    .link-button:hover {
-      background-color: darkgreen;
-      transform: scale(1.05);
-    }
-
-    .bubble {
-      display: none;
-      margin-top: 25px;
-      background: white;
-      color: black;
-      padding: 20px;
-      border-radius: 15px;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      font-size: 1rem;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="Menu.css">
+<title>Defender Of The Woods</title>
 </head>
+
+
 
 <body>
 
-  <div class="container">
+<div class="container">
     <h1>Defender Of The Woods</h1>
 
-    <div class="button-container">
-      <button onclick="showBubble()">Show Message</button>
-
-      <a href="länk" class="link-button">
-        Go To Next Page
-      </a>
-    </div>
-
     <div class="bubble" id="textBubble">
-      Welcome to the forest defender adventure!
+        <ul>
+            <li>D - "Lean Right"</li>
+            <li>A - "Lean Reft"</li>
+            <li>W + A/D - "Character Turn"</li>
+            <li>Spacebar - "Shoot"</li>
+        </ul>
     </div>
-  </div>
 
-  <script>
+<div class="button-container">
+    <button onclick="showBubble()">Controls</button>
+
+    <a href="html.html" class="link-button">
+        Start
+    </a>
+
+    <button onclick="showBubble2()">Credits</button>
+</div>
+
+    <div class="bubble" id="textBubble2">
+        <a> Game made by: Fabian Samuelsson, Patrik Oxenstrand och Vidar Berg.  
+            Vi äger inga sprites i detta spel, och vi har ingen copyright clause för spelet.  
+            Tack för att du spelar
+        </a>
+    </div>
+
+<script>
     function showBubble() {
-      const bubble = document.getElementById("textBubble");
+    const bubble = document.getElementById("textBubble");
 
-      if (bubble.style.display === "block") {
+    if (bubble.style.display === "block") {
         bubble.style.display = "none";
-      } else {
+    } else {
         bubble.style.display = "block";
-      }
     }
-  </script>
+    }
+
+    function showBubble2() {
+    const bubble = document.getElementById("textBubble2");
+
+    if (bubble.style.display === "block") {
+        bubble.style.display = "none";
+    } else {
+        bubble.style.display = "block";
+    }
+    }
+</script>
+    <Script src="menu.js"></Script>
+
 
 </body>
 </html>

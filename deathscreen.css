@@ -1,0 +1,68 @@
+    body {
+            background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("deathscreenbg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    }
+
+.deathscreen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: rgba(0, 0, 0, 0.7); /* lower opacity */
+
+    border: 3px solid red;
+    box-shadow: 0 0 30px red;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: rgba(255, 0, 0, 0.8); /* slightly transparent text */
+
+    font-size: 48px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+}
+
+.death-content button {
+    padding: 12px 28px;
+
+    background-color: rgba(0, 0, 0, 0.7);
+    color: red;
+
+    border: 2px solid red;
+    box-shadow: 0 0 15px red;
+
+    font-size: 22px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.death-content button:hover {
+    background-color: rgba(255, 0, 0, 0.2);
+    transform: scale(1.05);
+}
+
+.death-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
