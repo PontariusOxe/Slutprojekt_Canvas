@@ -50,6 +50,8 @@ const överkroppAttackAnimationSpeed = 10;
 
 let rotationAngle = 0;
 const rotationSpeed = 2;
+let shootCooldown = 0;
+const SHOOT_COOLDOWN = 20;
 
 let rightPressed = false;
 let leftPressed = false;
@@ -166,10 +168,10 @@ if (överkroppLoaded) {
                 : (överkroppAttackLoaded || currentOverkroppLoaded))
             : currentOverkroppLoaded;
 
-    if (rightPressed && rotationAngle <= 45) {
+    if (rightPressed && rotationAngle <= 45 && useInvertedSprites == true) {
         rotationAngle += rotationSpeed;
     }
-    if (leftPressed && rotationAngle >= -45) {
+    if (leftPressed && rotationAngle >= -45 && useInvertedSprites == false) {
         rotationAngle -= rotationSpeed;
     }
     if (rotationAngle < -45 && leftPressed == true && upPressed == true ) {
@@ -181,10 +183,10 @@ if (överkroppLoaded) {
         rotationAngle = -45; 
     }
     if (rotationAngle > 0 && !rightPressed && !upPressed) {
-        rotationAngle -= rotationSpeed - 1;
+        rotationAngle -= rotationSpeed;
     }
     if (rotationAngle < 0 && !leftPressed && !upPressed) {
-        rotationAngle += rotationSpeed - 1 ;
+        rotationAngle += rotationSpeed;
     }
     if (attackPressed) {
         useAttackSprites = true;
@@ -238,12 +240,13 @@ if (överkroppLoaded) {
         cleanupActiveEnemies();
     }
 
-    if (typeof drawGolem === 'function') {
-        drawGolem(överkropp);
+    // Update round logic
+    if (typeof updateRounds === 'function') {
+        updateRounds();
     }
 
-    if (typeof drawNightborne === 'function') {
-        drawNightborne(överkropp);
+    if (shootCooldown > 0) {
+        shootCooldown--;
     }
 
     requestAnimationFrame(draw);
@@ -258,8 +261,8 @@ window.addEventListener('keydown', (event) => {
         animationStarted = true;
         attackPressed = true;
 
-        if (justStarted && typeof startEnemySpawns === 'function') {
-            startEnemySpawns();
+        if (justStarted && typeof startRound === 'function') {
+            startRound(1);
         }
 
         // Spawn projectile
@@ -274,23 +277,20 @@ window.addEventListener('keydown', (event) => {
             ? överkroppVPivotOffsetY
             : överkroppPivotOffsetY;
 
+        // compute pivot world coordinates
+        const pivotX = useInvertedSprites ? överkropp.x + currentPivotOffsetX + 30: överkropp.x + currentPivotOffsetX - 30;
+        const pivotY = överkropp.y + currentPivotOffsetY - 50;
 
-        const bowPivotX = 720;
-        const bowPivotY = 480; // Adjust Y based on angle for better effect
-
-        const distance = 35;
-
+        const distance = Math.max(8, Math.round(canvas.width * (35 / 1920)));
         const rad = rotationAngle * Math.PI / 180;
-
-        // Reverse direction when inverted
         const direction = useInvertedSprites ? -1 : 1;
 
+        const spawnX = pivotX + Math.cos(rad) * distance * direction;
+        const spawnY = pivotY + Math.sin(rad) * distance;
 
-        const spawnX = bowPivotX + Math.cos(rad) * distance * direction;
-        const spawnY = bowPivotY + Math.sin(rad) * distance;
-
-        if (typeof spawnProjectile === 'function') {
-            spawnProjectile(bowPivotX, bowPivotY, rotationAngle);
+        if (shootCooldown <= 0 && typeof spawnProjectile === 'function') {
+            spawnProjectile(spawnX, spawnY, rotationAngle);
+            shootCooldown = SHOOT_COOLDOWN;
         }
     }
     if (event.code === 'KeyD') rightPressed = true;

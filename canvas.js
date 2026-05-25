@@ -65,15 +65,19 @@ function getUnderkroppCoords() {
     const width = underkroppImage.naturalWidth * scale;
     const height = underkroppImage.naturalHeight * scale;
     const x = canvas.width / 2;
-    const y = (canvas.height + 260) / 2;
+    // 260px at 1080px height -> fraction of baseline height
+    const underkroppYOffsetPct = 260 / 1080;
+    const y = (canvas.height + underkroppYOffsetPct * canvas.height) / 2;
     return { x, y, width, height };
 }
 
 function getOverkroppCoords(underkropp) {
     const width = överkroppFrameWidth * 3;
     const height = överkroppFrameHeight * 3;
-    const x = underkropp.x + 38;
-    const y = underkropp.y - height + 48;
+    const overkroppOffsetXPct = 38 / 1920; // 38px baseline
+    const overkroppOffsetYPct = 48 / 1080; // 48px baseline
+    const x = underkropp.x + overkroppOffsetXPct * canvas.width;
+    const y = underkropp.y - height + overkroppOffsetYPct * canvas.height;
     return { x, y, width, height };
 }
 
@@ -98,8 +102,9 @@ function draw() {
     if (överkroppLoaded) {
         const baseÖverkropp = getOverkroppCoords(underkropp);
         // Apply offset for inverted sprites
+        const invertedOffsetXPct = 24 / 1920;
         const överkropp = useInvertedSprites ? 
-            { ...baseÖverkropp, x: baseÖverkropp.x - 24 } : 
+            { ...baseÖverkropp, x: baseÖverkropp.x - invertedOffsetXPct * canvas.width } : 
             baseÖverkropp;
         
         // Determine which sprite set to use

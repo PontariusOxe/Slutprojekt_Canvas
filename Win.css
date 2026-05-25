@@ -1,0 +1,52 @@
+    body {
+            background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("image.png");
+    background-size: fill;
+    background-position: center;
+    background-repeat: no-repeat;
+    }
+
+    .container {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 3.704vh;
+    border-radius: 1.042vw;
+    color: white;
+    }
+
+    h1 {
+    margin-bottom: 2.315vh;
+    font-size: 3rem;
+    }
+
+    .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 1.042vw;
+    }
+
+    button,
+    .link-button {
+    padding: 1.296vh 1.458vw;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.625vw;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+    color: white;
+    background-color: forestgreen;
+    }
+
+    button:hover,
+    .link-button:hover {
+    background-color: darkgreen;
+    transform: scale(1.05);
+    }

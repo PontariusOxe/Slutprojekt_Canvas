@@ -7,6 +7,9 @@ let showWaveWarning = false;
 let waveWarningText = "";
 let warningTimer = 0;
 
+let spawnTimer = 0;
+const SPAWN_INTERVAL = 300; // 5 seconds at 60fps
+
 document.getElementById("roundText").innerText = currentRound;
 currentRound++;
 document.getElementById("roundText").innerText = currentRound;
@@ -14,11 +17,15 @@ document.getElementById("roundText").innerText = currentRound;
 function startRound(round) {
     currentRound = round;
 
-    enemiesToSpawn = 3 + round / 4; // scaling
+    enemiesToSpawn = round + 1; // Runda 1 = 2 fiender, Runda 2 = 3, etc
     enemiesSpawned = 0;
+    spawnTimer = 0;
     roundActive = false;
 
-    // 🔥 SHOW WARNING FIRST
+    // Update HUD
+    document.getElementById("roundText").innerText = currentRound;
+
+    // SHOW WARNING FIRST
     showWarning(`ROUND ${currentRound} INCOMING`);
 }
 
@@ -32,34 +39,32 @@ function spawnEnemyForRound() {
     if (!roundActive) return;
     if (enemiesSpawned >= enemiesToSpawn) return;
 
-    spawnRandomEnemy();
-    enemiesSpawned++;
+    spawnTimer++;
 
-    setTimeout(spawnEnemyForRound, 700);
+    if (spawnTimer >= SPAWN_INTERVAL) {
+        spawnRandomEnemy();
+        enemiesSpawned++;
+        spawnTimer = 0;
+    }
 }
 
 function updateRounds() {
 
-    // remove dead enemies
-    for (let i = ActiveEnemies.length - 1; i >= 0; i--) {
-        if (ActiveEnemies[i].dead) {
-            ActiveEnemies.splice(i, 1);
-        }
-    }
-
-    // 🔥 WARNING SCREEN LOGIC
+    // WARNING SCREEN LOGIC
     if (showWaveWarning) {
         warningTimer--;
 
         if (warningTimer <= 0) {
             showWaveWarning = false;
             roundActive = true;
-
-            spawnEnemyForRound();
+            spawnTimer = 0;
         }
 
         return; // freeze game during warning
     }
+
+    // Spawn enemies each frame during active round
+    spawnEnemyForRound();
 
     // ROUND COMPLETE CHECK
     if (
@@ -69,16 +74,14 @@ function updateRounds() {
     ) {
         roundActive = false;
 
-        if (currentRound < 20) {
+        //vilken runda spelet slutar skickar ut enemys.
+        if (currentRound < 10) {
             setTimeout(() => {
                 startRound(currentRound + 1);
             }, 1500);
         } else {
-            console.log("GAME COMPLETE");
+            window.location.href = 'WIn.html';
         }
     }
 }
-
-// START GAME
-startRound(1);
 

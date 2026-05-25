@@ -17,7 +17,7 @@ canvas {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 1.042vw;
 }
 
 .bubble {
@@ -43,28 +43,28 @@ canvas {
     .container {
     text-align: center;
     background: rgba(0, 0, 0, 0.5);
-    padding: 40px;
-    border-radius: 20px;
+    padding: 3.704vh;
+    border-radius: 1.042vw;
     color: white;
     }
 
     h1 {
-    margin-bottom: 25px;
+    margin-bottom: 2.315vh;
     font-size: 3rem;
     }
 
     .button-container {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 1.042vw;
     }
 
     button,
     .link-button {
-    padding: 14px 28px;
+    padding: 1.296vh 1.458vw;
     font-size: 1rem;
     border: none;
-    border-radius: 12px;
+    border-radius: 0.625vw;
     cursor: pointer;
     transition: 0.3s;
     text-decoration: none;
@@ -80,12 +80,12 @@ canvas {
 
     .bubble {
     display: none;
-    margin-top: 25px;
+    margin-top: 2.315vh;
     background: white;
     color: black;
-    padding: 20px;
-    border-radius: 15px;
-    max-width: 400px;
+    padding: 1.852vh;
+    border-radius: 0.781vw;
+    max-width: 20.833vw;
     margin-left: auto;
     margin-right: auto;
     font-size: 1rem;
@@ -100,13 +100,13 @@ canvas {
     background-color: #dacd84;
     color: black;
     border: 0.4vh solid rgb(212, 183, 39);
-    padding: 12px 24px;
-    border-radius: 5px;
+    padding: 1.111vh 1.25vw;
+    border-radius: 0.26vw;
     cursor: pointer;
     font-weight: bold;
     font-family: Arial, sans-serif;
-    font-size: 16px;
-    margin-top: 20px;
+    font-size: 0.833vw;
+    margin-top: 1.852vh;
     transition: all 0.3s ease;
     position: fixed;
     bottom: 20vh;
@@ -116,11 +116,11 @@ canvas {
 
 .bubble {
     background-color: white;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 1.042vw;
+    padding: 2.778vh;
+    box-shadow: 0 0.370vh 0.556vh rgba(0, 0, 0, 0.3);
     width: 90%;
-    max-width: 500px;
+    max-width: 26.042vw;
     position: relative;
     animation: slideUp 0.3s ease;
 }

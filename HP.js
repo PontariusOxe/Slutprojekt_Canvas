@@ -1,7 +1,7 @@
 const HP = { 
     maxHP: 100,
     currentHP: 100,
-    damagePercent: 10,
+    damagePercent: 0.0001,
     barWidth: 220,
     barHeight: 18,
     barX: 20,

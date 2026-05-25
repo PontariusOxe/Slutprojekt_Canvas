@@ -19,7 +19,7 @@ const EnemyArray = [
         x: 0,
         direction: 1,
 
-        speed: 3,
+        speed: 4,
         scale: 3,
 
         state: "walking",
@@ -67,14 +67,17 @@ const EnemyArray = [
             sprite: "MonsterSprite/NightBorne/NightBorneD.png"
         },
 
+        // values stored as fractions of base resolution (1920x1080)
         offsets: {
-            left: 80,
-            right: 90
+            // horizontal percentages (relative to width)
+            left: 80 / 1920,
+            right: 90 / 1920
         },
 
         y: {
-            walking: 250,
-            attack: 150
+            // vertical percentages (relative to height)
+            walking: 390 / 1080,
+            attack: 220 / 1080
         },
 
         reset() {
@@ -145,8 +148,8 @@ const EnemyArray = [
 
             const currentY =
                 this.state === "walking"
-                    ? (this.canvas.height + this.y.walking) / 2
-                    : (this.canvas.height + this.y.attack) / 2;
+                    ? (this.canvas.height + this.y.walking * this.canvas.height) / 2
+                    : (this.canvas.height + this.y.attack * this.canvas.height) / 2;
 
             return {
                 x: this.x,
@@ -182,8 +185,8 @@ const EnemyArray = [
 
             const stopX =
                 this.direction === 1
-                    ? playerÖverkropp.x - coords.width + this.offsets.left
-                    : playerÖverkropp.x + playerÖverkropp.width - this.offsets.right;
+                    ? playerÖverkropp.x - coords.width + this.offsets.left * this.canvas.width
+                    : playerÖverkropp.x + playerÖverkropp.width - this.offsets.right * this.canvas.width;
 
             const distance = stopX - this.x;
 
@@ -316,30 +319,20 @@ const EnemyArray = [
 
             this.ctx.restore();
 
-            // HEALTH BAR
+            // HEALTH BAR (scaled from 1920x1080 baseline) - only show when alive
+            if (!isDead) {
+                const barWidth = Math.round(this.canvas.width * (80 / 1920));
+                const barHeight = Math.round(this.canvas.height * (10 / 1080));
+                const healthPercent = this.health / this.maxHealth;
+                const barX = coords.x + (coords.width / 2) - (barWidth / 2);
+                const barY = coords.y - Math.round(this.canvas.height * (20 / 1080));
 
-            const barWidth = 80;
-            const barHeight = 10;
+                this.ctx.fillStyle = "red";
+                this.ctx.fillRect(barX, barY, barWidth, barHeight);
 
-            const healthPercent = this.health / this.maxHealth;
-
-            this.ctx.fillStyle = "red";
-
-            this.ctx.fillRect(
-                coords.x + (coords.width / 2) - (barWidth / 2),
-                coords.y - 20,
-                barWidth,
-                barHeight
-            );
-
-            this.ctx.fillStyle = "lime";
-
-            this.ctx.fillRect(
-                coords.x + (coords.width / 2) - (barWidth / 2),
-                coords.y - 20,
-                barWidth * healthPercent,
-                barHeight
-            );
+                this.ctx.fillStyle = "lime";
+                this.ctx.fillRect(barX, barY, Math.round(barWidth * healthPercent), barHeight);
+            }
         }
     },
 
@@ -348,9 +341,7 @@ const EnemyArray = [
 
 
 
-    // =========================
     // GOLEM
-    // =========================
 
     {
         Id: "golem",
@@ -369,7 +360,7 @@ const EnemyArray = [
         x: 0,
         direction: 1,
 
-        speed: 1.5,
+        speed: 2,
         scale: 3,
 
         state: "walking",
@@ -412,19 +403,19 @@ const EnemyArray = [
 
             FrameIndex: 0,
             AnimationCounter: 0,
-            AnimationSpeed: 10,
+            AnimationSpeed: 14,
 
             sprite: "MonsterSprite/Golems_Free_Version/Golems_Free_Version/Golem_1/Blue/White_Swoosh_VFX/Golem_1_die.png"
         },
 
         offsets: {
-            left: 95,
-            right: 125
+            left: 95 / 1920,
+            right: 125 / 1920
         },
 
         y: {
-            walking: 30,
-            attack: 30
+            walking: 30 / 1080,
+            attack: 30 / 1080
         },
 
         reset() {
@@ -494,7 +485,7 @@ const EnemyArray = [
             const height = currentFrameHeight * this.scale;
 
             const currentY =
-                (this.canvas.height + this.y.walking) / 2;
+                (this.canvas.height + this.y.walking * this.canvas.height) / 2;
 
             return {
                 x: this.x,
@@ -530,8 +521,8 @@ const EnemyArray = [
 
             const stopX =
                 this.direction === 1
-                    ? playerÖverkropp.x - coords.width + this.offsets.left
-                    : playerÖverkropp.x + playerÖverkropp.width - this.offsets.right;
+                    ? playerÖverkropp.x - coords.width + this.offsets.left * this.canvas.width
+                    : playerÖverkropp.x + playerÖverkropp.width - this.offsets.right * this.canvas.width;
 
             const distance = stopX - this.x;
 
@@ -664,30 +655,20 @@ const EnemyArray = [
 
             this.ctx.restore();
 
-            // HEALTH BAR
+            // HEALTH BAR (scaled from 1920x1080 baseline) - only show when alive
+            if (!isDead) {
+                const barWidth = Math.round(this.canvas.width * (80 / 1920));
+                const barHeight = Math.round(this.canvas.height * (10 / 1080));
+                const healthPercent = this.health / this.maxHealth;
+                const barX = coords.x + (coords.width / 2) - (barWidth / 2);
+                const barY = coords.y - Math.round(this.canvas.height * (20 / 1080));
 
-            const barWidth = 80;
-            const barHeight = 10;
+                this.ctx.fillStyle = "red";
+                this.ctx.fillRect(barX, barY, barWidth, barHeight);
 
-            const healthPercent = this.health / this.maxHealth;
-
-            this.ctx.fillStyle = "red";
-
-            this.ctx.fillRect(
-                coords.x + (coords.width / 2) - (barWidth / 2),
-                coords.y - 20,
-                barWidth,
-                barHeight
-            );
-
-            this.ctx.fillStyle = "lime";
-
-            this.ctx.fillRect(
-                coords.x + (coords.width / 2) - (barWidth / 2),
-                coords.y - 20,
-                barWidth * healthPercent,
-                barHeight
-            );
+                this.ctx.fillStyle = "lime";
+                this.ctx.fillRect(barX, barY, Math.round(barWidth * healthPercent), barHeight);
+            }
         }
     }
 ];
@@ -698,8 +679,6 @@ const EnemyArray = [
 // ACTIVE ENEMIES
 
 const ActiveEnemies = [];
-let enemySpawnIntervalId = null;
-let enemySpawnsStarted = false;
 
 
 
@@ -750,6 +729,11 @@ function spawnRandomEnemy() {
     enemy.deathImage.onload = () => {
 
         enemy.deathLoaded = true;
+        console.log("Loaded death image for", enemy.Id);
+    };
+
+    enemy.deathImage.onerror = () => {
+        console.error("Failed to load death image for", enemy.Id, "at", enemy.death.sprite);
     };
 
     ActiveEnemies.push(enemy);
@@ -757,15 +741,6 @@ function spawnRandomEnemy() {
 }
 
 
-
-function startEnemySpawns() {
-    if (enemySpawnsStarted) return;
-    enemySpawnsStarted = true;
-    spawnRandomEnemy();
-    enemySpawnIntervalId = setInterval(() => {
-        spawnRandomEnemy();
-    }, 5000);
-}
 
 function drawActiveEnemies(playerÖverkropp) {
     if (!ActiveEnemies.length) return;
