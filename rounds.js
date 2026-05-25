@@ -1,4 +1,4 @@
-let currentRound = 1;
+let currentRound = 0;
 let enemiesToSpawn = 0;
 let enemiesSpawned = 0;
 let roundActive = false;
@@ -7,10 +7,14 @@ let showWaveWarning = false;
 let waveWarningText = "";
 let warningTimer = 0;
 
+document.getElementById("roundText").innerText = currentRound;
+currentRound++;
+document.getElementById("roundText").innerText = currentRound;
+
 function startRound(round) {
     currentRound = round;
 
-    enemiesToSpawn = 3 + round * 2; // scaling
+    enemiesToSpawn = 3 + round / 4; // scaling
     enemiesSpawned = 0;
     roundActive = false;
 
@@ -78,6 +82,3 @@ function updateRounds() {
 // START GAME
 startRound(1);
 
-document.getElementById("roundText").innerText = currentRound;
-currentRound++;
-document.getElementById("roundText").innerText = currentRound;

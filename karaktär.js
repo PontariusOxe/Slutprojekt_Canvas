@@ -105,6 +105,11 @@ function draw() {
         updateProjectiles();
     }
 
+    // Check projectile collisions with enemies
+    if (typeof checkProjectileEnemyCollisions === 'function') {
+        checkProjectileEnemyCollisions();
+    }
+
 if (!animationStarted) {
     ctx.fillStyle = "white";
     ctx.font = "30px Arial";
@@ -225,6 +230,14 @@ if (överkroppLoaded) {
         drawProjectiles();
     }
 
+    if (typeof drawActiveEnemies === 'function') {
+        drawActiveEnemies(överkropp);
+    }
+
+    if (typeof cleanupActiveEnemies === 'function') {
+        cleanupActiveEnemies();
+    }
+
     if (typeof drawGolem === 'function') {
         drawGolem(överkropp);
     }
@@ -241,8 +254,14 @@ draw();
 
 window.addEventListener('keydown', (event) => {
     if (event.code === 'Space') {
+        const justStarted = !animationStarted;
         animationStarted = true;
         attackPressed = true;
+
+        if (justStarted && typeof startEnemySpawns === 'function') {
+            startEnemySpawns();
+        }
+
         // Spawn projectile
         const underkropp = getUnderkroppCoords();
         const överkropp = getOverkroppCoords(underkropp);
@@ -255,21 +274,23 @@ window.addEventListener('keydown', (event) => {
             ? överkroppVPivotOffsetY
             : överkroppPivotOffsetY;
 
-        const bowPivotX = överkropp.x + currentPivotOffsetX - 10;
-        const bowPivotY = överkropp.y + currentPivotOffsetY - 50;
 
-        const distance = 40;
+        const bowPivotX = 720;
+        const bowPivotY = 480; // Adjust Y based on angle for better effect
+
+        const distance = 35;
 
         const rad = rotationAngle * Math.PI / 180;
 
         // Reverse direction when inverted
         const direction = useInvertedSprites ? -1 : 1;
 
+
         const spawnX = bowPivotX + Math.cos(rad) * distance * direction;
         const spawnY = bowPivotY + Math.sin(rad) * distance;
 
         if (typeof spawnProjectile === 'function') {
-            spawnProjectile(spawnX, spawnY, rotationAngle);
+            spawnProjectile(bowPivotX, bowPivotY, rotationAngle);
         }
     }
     if (event.code === 'KeyD') rightPressed = true;

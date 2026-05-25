@@ -24,8 +24,8 @@ const EnemyArray = [
 
         state: "walking",
 
-        health: 100,
-        maxHealth: 100,
+        health: 50,
+        maxHealth: 50,
         dead: false,
 
         walk: {
@@ -58,7 +58,7 @@ const EnemyArray = [
         death: {
             FrameCount: 23,
             FrameWidth: 80,
-            FrameHeight: 67,
+            FrameHeight: 47,
 
             FrameIndex: 0,
             AnimationCounter: 0,
@@ -698,6 +698,8 @@ const EnemyArray = [
 // ACTIVE ENEMIES
 
 const ActiveEnemies = [];
+let enemySpawnIntervalId = null;
+let enemySpawnsStarted = false;
 
 
 
@@ -709,11 +711,13 @@ function spawnRandomEnemy() {
     const enemyTemplate =
         EnemyArray[Math.floor(Math.random() * EnemyArray.length)];
 
-    // DEEP COPY
-    const enemy = structuredClone(enemyTemplate);
-    
-    // RECONNECT FUNCTIONS
-    Object.setPrototypeOf(enemy, Object.getPrototypeOf(enemyTemplate));
+    const enemy = Object.assign({}, enemyTemplate);
+
+    enemy.walk = { ...enemyTemplate.walk };
+    enemy.attack = { ...enemyTemplate.attack };
+    enemy.death = { ...enemyTemplate.death };
+    enemy.offsets = { ...enemyTemplate.offsets };
+    enemy.y = { ...enemyTemplate.y };
 
     // CANVAS
     enemy.canvas = document.getElementById('gameCanvas');
@@ -749,18 +753,34 @@ function spawnRandomEnemy() {
     };
 
     ActiveEnemies.push(enemy);
-
     console.log("Spawned:", enemy.Id);
 }
 
 
 
-// SPAWN EVERY 10 SECONDS
-
-spawnRandomEnemy();
-
-setInterval(() => {
-
+function startEnemySpawns() {
+    if (enemySpawnsStarted) return;
+    enemySpawnsStarted = true;
     spawnRandomEnemy();
+    enemySpawnIntervalId = setInterval(() => {
+        spawnRandomEnemy();
+    }, 5000);
+}
 
-}, 10000);
+function drawActiveEnemies(playerÖverkropp) {
+    if (!ActiveEnemies.length) return;
+    ActiveEnemies.forEach((enemy) => enemy.draw(playerÖverkropp));
+}
+
+function cleanupActiveEnemies() {
+    for (let i = ActiveEnemies.length - 1; i >= 0; i--) {
+        const enemy = ActiveEnemies[i];
+        if (
+            enemy.state === 'dead' &&
+            enemy.death.FrameIndex === enemy.death.FrameCount - 1 &&
+            enemy.death.AnimationCounter === 0
+        ) {
+            ActiveEnemies.splice(i, 1);
+        }
+    }
+}
