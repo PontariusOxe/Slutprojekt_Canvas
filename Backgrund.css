@@ -14,14 +14,14 @@ canvas {
 
 #hud {
     position: absolute;
-    top: 0.926vh;
-    right: 0.521vw;
+    top: 1vh;
+    left: 90vw;
 
     color: white;
-    font-size: 1.042vw;
+    font-size: 1rem;
     font-family: Arial;
 
     background: rgba(0, 0, 0, 0.5);
-    padding: 0.741vh 0.625vw;
-    border-radius: 0.313vw;
+    padding: 2vh 2vw;
+    border-radius: 0.3vw;
 }

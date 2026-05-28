@@ -8,7 +8,7 @@ let waveWarningText = "";
 let warningTimer = 0;
 
 let spawnTimer = 0;
-const SPAWN_INTERVAL = 300; // 5 seconds at 60fps
+const SPAWN_INTERVAL = 140; // 2 seconds at 60fps
 
 document.getElementById("roundText").innerText = currentRound;
 currentRound++;
@@ -17,7 +17,7 @@ document.getElementById("roundText").innerText = currentRound;
 function startRound(round) {
     currentRound = round;
 
-    enemiesToSpawn = round + 1; // Runda 1 = 2 fiender, Runda 2 = 3, etc
+    enemiesToSpawn = round + 5; // Runda 1 = 2 fiender, Runda 2 = 3, etc
     enemiesSpawned = 0;
     spawnTimer = 0;
     roundActive = false;
@@ -32,7 +32,7 @@ function startRound(round) {
 function showWarning(text) {
     showWaveWarning = true;
     waveWarningText = text;
-    warningTimer = 180; // ~3 seconds at 60fps
+    warningTimer = 100; // ~3 seconds at 60fps
 }
 
 function spawnEnemyForRound() {

@@ -51,11 +51,12 @@ const överkroppAttackAnimationSpeed = 10;
 let rotationAngle = 0;
 const rotationSpeed = 2;
 let shootCooldown = 0;
-const SHOOT_COOLDOWN = 20;
+const SHOOT_COOLDOWN = 10;
 
 let rightPressed = false;
 let leftPressed = false;
 let upPressed = false;
+let downPressed = false;
 let attackPressed = false;
 
 let useInvertedSprites = false;
@@ -168,24 +169,25 @@ if (överkroppLoaded) {
                 : (överkroppAttackLoaded || currentOverkroppLoaded))
             : currentOverkroppLoaded;
 
-    if (rightPressed && rotationAngle <= 45 && useInvertedSprites == true) {
+    if (rightPressed && rotationAngle <= 44 && useInvertedSprites == true) {
         rotationAngle += rotationSpeed;
     }
-    if (leftPressed && rotationAngle >= -45 && useInvertedSprites == false) {
+    if (leftPressed && rotationAngle >= -44 && useInvertedSprites == false) {
         rotationAngle -= rotationSpeed;
     }
-    if (rotationAngle < -45 && leftPressed == true && upPressed == true ) {
+    if (rotationAngle == 0 && upPressed == true ) {
         useInvertedSprites  = true;
-        rotationAngle = 45;
+    } 
+    if (rotationAngle == 0 && downPressed == true) {
+        useInvertedSprites  = false;
     }
-    if (rotationAngle > 45 && rightPressed == true && upPressed == true) {
-        useInvertedSprites = false;
-        rotationAngle = -45; 
-    }
-    if (rotationAngle > 0 && !rightPressed && !upPressed) {
+    
+
+
+    if (rotationAngle > 0 && !rightPressed) {
         rotationAngle -= rotationSpeed;
     }
-    if (rotationAngle < 0 && !leftPressed && !upPressed) {
+    if (rotationAngle < 0 && !leftPressed) {
         rotationAngle += rotationSpeed;
     }
     if (attackPressed) {
@@ -234,6 +236,10 @@ if (överkroppLoaded) {
 
     if (typeof drawActiveEnemies === 'function') {
         drawActiveEnemies(överkropp);
+    }
+
+    if (typeof drawEnemyHitboxes === 'function') {
+        drawEnemyHitboxes();
     }
 
     if (typeof cleanupActiveEnemies === 'function') {
@@ -296,12 +302,14 @@ window.addEventListener('keydown', (event) => {
     if (event.code === 'KeyD') rightPressed = true;
     if (event.code === 'KeyA') leftPressed = true;
     if (event.code === 'KeyW') upPressed = true;
+    if (event.code === 'KeyS') downPressed = true;
 });
 
 window.addEventListener('keyup', (event) => {
     if (event.code === 'KeyD') rightPressed = false;
     if (event.code === 'KeyA') leftPressed = false;
     if (event.code === 'KeyW') upPressed = false;
+    if (event.code === 'KeyS') downPressed = false;
     if (event.code === 'Space') attackPressed = false;
 });
 

@@ -2,8 +2,10 @@
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const bollImg = new Image();
-bollImg.src = "boll/boll.png";
+let bollImg = new Image();
+// Ladda sparad bollbild från localStorage, annars använd standard
+const savedBoll = localStorage.getItem("selectedBoll");
+bollImg.src = savedBoll || "boll/boll.png";
 
 let bollFrameIndex = 0;
 let bollAnimationCounter = 0;
@@ -48,6 +50,28 @@ function drawProjectiles() {
     }
 }
 
+
+function getEnemyHitbox(enemy) {
+    const enemyCoords = enemy.getCoords();
+    const hitbox = enemy.hitbox;
+
+    if (!hitbox) {
+        return enemyCoords;
+    }
+
+    const x = enemyCoords.x + enemyCoords.width * hitbox.left;
+    const width = enemyCoords.width * Math.max(0, 1 - hitbox.left - hitbox.right);
+    const y = enemyCoords.y + enemyCoords.height * hitbox.top;
+    const height = enemyCoords.height * hitbox.height;
+
+    return {
+        x,
+        y,
+        width,
+        height
+    };
+}
+
 function checkProjectileEnemyCollisions() {
     for (let i = projectiles.length - 1; i >= 0; i--) {
         const p = projectiles[i];
@@ -55,13 +79,13 @@ function checkProjectileEnemyCollisions() {
         for (const enemy of ActiveEnemies) {
             if (enemy.dead) continue;
             
-            const enemyCoords = enemy.getCoords();
+            const enemyHitbox = getEnemyHitbox(enemy);
             
             if (
-                p.x < enemyCoords.x + enemyCoords.width &&
-                p.x + p.width > enemyCoords.x &&
-                p.y < enemyCoords.y + enemyCoords.height &&
-                p.y + p.height > enemyCoords.y
+                p.x < enemyHitbox.x + enemyHitbox.width &&
+                p.x + p.width > enemyHitbox.x &&
+                p.y < enemyHitbox.y + enemyHitbox.height &&
+                p.y + p.height > enemyHitbox.y
             ) {
                 enemy.takeDamage(10);
                 
