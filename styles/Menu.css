@@ -1,0 +1,289 @@
+/* ===== GLOBAL STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+body {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("../assets/images/menu.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.65);
+    padding: 3.5vh 4vw;
+    border-radius: 1.5vw;
+    color: white;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    animation: fadeInScale 0.6s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ===== TITLE ===== */
+h1 {
+    margin-bottom: 2.5vh;
+    font-size: 3.5rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1.2vh;
+    letter-spacing: 0.05em;
+}
+
+/* ===== BUTTON CONTAINER ===== */
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5vw;
+    flex-wrap: wrap;
+    margin-top: 2vh;
+}
+
+/* ===== BUTTONS ===== */
+button,
+.link-button {
+    padding: 1.5vh 2vw;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.625vw;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    text-decoration: none;
+    color: white;
+    background-color: #2ecc71;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+button::before,
+.link-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: left 0.3s;
+}
+
+button:hover::before,
+.link-button:hover::before {
+    left: 100%;
+}
+
+button:hover,
+.link-button:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+}
+
+button:active,
+.link-button:active {
+    transform: translateY(0);
+}
+
+/* ===== BUBBLES/MODALS ===== */
+.bubble {
+    display: none;
+    margin-top: 2vh;
+    background: white;
+    color: #333;
+    padding: 2.5vh 2vw;
+    border-radius: 1vw;
+    max-width: 24vw;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 0.95rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    line-height: 1.6;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+small {
+    display: block;
+    margin-top: 1vh;
+    opacity: 0.7;
+    font-style: italic;
+}
+
+p {
+    margin: 1vh 0;
+    line-height: 1.6;
+}
+
+/* ===== LISTS ===== */
+ul {
+    text-decoration: none;
+    list-style-type: none;
+    text-align: left;
+    margin-left: 1vw;
+}
+
+ul li {
+    margin: 0.8vh 0;
+    padding-left: 1.5vw;
+    position: relative;
+}
+
+ul li::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+strong {
+    color: #2ecc71;
+    font-weight: 600;
+}
+
+/* ===== GALLERY ===== */
+#bollGallery {
+    display: none !important;
+    margin-top: 2vh;
+    background: white;
+    color: black;
+    padding: 2vh;
+    border-radius: 0.8vw;
+    max-width: 36vw;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+#bollGallery.show {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5vw;
+    animation: slideDown 0.3s ease-out;
+}
+
+.boll-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 0.5vw;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    object-fit: cover;
+}
+
+.boll-image:hover {
+    transform: scale(1.1);
+    border-color: #2ecc71;
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+}
+
+.boll-image.boll-selected {
+    animation: pulse 0.6s ease-out;
+    border-color: #2ecc71;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1200px) {
+    .container {
+        padding: 2.5vh 3vw;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    .button-container {
+        gap: 1vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 2vh 2.5vw;
+        border-radius: 1vw;
+    }
+    
+    h1 {
+        font-size: 2rem;
+        letter-spacing: 0.1em;
+    }
+    
+    button,
+    .link-button {
+        padding: 1.2vh 1.5vw;
+        font-size: 0.95rem;
+    }
+    
+    .bubble {
+        max-width: 90vw;
+        padding: 2vh 1.5vw;
+    }
+    
+    #bollGallery {
+        max-width: 90vw;
+    }
+}

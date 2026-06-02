@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="../styles/Menu.css">
+    <title>Defender Of The Woods - Main Menu</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Defender Of The Woods</h1>
+
+        <div class="bubble" id="textBubble">
+            <h3>Controls</h3>
+            <ul>
+                <li><strong>D</strong> - Lean Right</li>
+                <li><strong>A</strong> - Lean Left</li>
+                <li><strong>W or S</strong> - Character Turn</li>
+                <li><strong>Spacebar</strong> - Shoot</li>
+            </ul>
+            <small>Tip: Put the game in fullscreen on Chrome for the best experience</small>
+        </div>
+
+        <div class="button-container">
+            <button onclick="showBubble()">Controls</button>
+            <a href="Game.html" class="link-button">Start Game</a>
+            <button onclick="showBollGallery()">Select Ball</button>
+            <button onclick="showBubble2()">Credits</button>
+        </div>
+
+        <div class="bubble" id="bollGallery"></div>
+
+        <div class="bubble" id="textBubble2">
+            <h3>Credits</h3>
+            <p>
+                <strong>Game made by:</strong><br>
+                Fabian Samuelsson, Patrik Oxenstrand, and Vidar Berg
+            </p>
+            <p style="font-size: 0.85rem; margin-top: 1vh; opacity: 0.8;">
+                All sprites used in this game are either original creations or used with permission. 
+                No copyright infringement intended. Thank you for playing!
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function showBubble() {
+            const bubble = document.getElementById("textBubble");
+            bubble.style.display = bubble.style.display === "block" ? "none" : "block";
+        }
+
+        function showBubble2() {
+            const bubble = document.getElementById("textBubble2");
+            bubble.style.display = bubble.style.display === "block" ? "none" : "block";
+        }
+
+        const bollImages = [
+            "boll.png",
+            "badboll.png",
+            "husboll.png",
+            "ostboll.png",
+            "fireboll.png",
+            "alkisboll.png",
+            "pizzaboll.png",
+            "svenskboll.png",
+            "vattenboll.png",
+            "chineseboll.png",
+            "falukorvboll.png",
+            "blixtboll.png",
+            "storsvenskboll.png",
+            "stornorskboll.png"
+        ];
+
+        function selectBoll(imagePath, imgElement) {
+            const fullPath = `../assets/sprites/balls/${imagePath}`;
+            localStorage.setItem("selectedBoll", fullPath);
+            console.log("Ball selected: " + fullPath);
+            
+            imgElement.classList.add("boll-selected");
+            setTimeout(() => {
+                imgElement.classList.remove("boll-selected");
+            }, 600);
+        }
+
+        function showBollGallery() {
+            const gallery = document.getElementById("bollGallery");
+            
+            if (gallery.classList.contains("show")) {
+                gallery.classList.remove("show");
+            } else {
+                gallery.classList.add("show");
+                gallery.innerHTML = "";
+                
+                bollImages.forEach((filename) => {
+                    const img = document.createElement("img");
+                    img.src = `../assets/sprites/balls/${filename}`;
+                    img.alt = "Ball option";
+                    img.className = "boll-image";
+                    img.onclick = () => selectBoll(filename, img);
+                    gallery.appendChild(img);
+                });
+            }
+        }
+    </script>
+</body>
+</html>

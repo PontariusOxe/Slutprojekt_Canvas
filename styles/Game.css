@@ -1,0 +1,33 @@
+body {
+    background-image: url('https://t4.ftcdn.net/jpg/15/32/47/05/360_F_1532470528_5aLYaiRJdlMAIVDRC4KZVfukQMp1Gynh.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+#hud {
+    position: absolute;
+    top: 1vh;
+    left: 90vw;
+
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    background: rgba(0, 0, 0, 0.6);
+    padding: 2.5vh 2.5vw;
+    border-radius: 0.8vw;
+    border: 2px solid rgba(46, 204, 113, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(3px);
+    letter-spacing: 0.05em;
+}
